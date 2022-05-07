@@ -22,4 +22,4 @@ results = collection.update_many({"name": "jim"}, {"$set": {"score": -2}}) # you
 results = collection.update_many({"name": "henry"}, {"$inc": {"looks": -100}})
 
 post_count = collection.count_documents({})
-print(post_count)
+print(post_count) #hoho
