@@ -19,3 +19,10 @@ results = collection.update_many({"name": "henry"}, {"$inc": {"looks": -100}})
 
 post_count = collection.count_documents({})
 print(post_count) #hoho
+
+
+import json
+
+with open("ryyryeo.json", "r") as json_file:
+    my_dict = json.load(json_file)
+    collection.insert_one(my_dict)
