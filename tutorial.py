@@ -11,3 +11,4 @@ collection = db["userdata"]
 post = {"name": "henry", "score" : 5}
 
 collection.insert_one(post)
+
