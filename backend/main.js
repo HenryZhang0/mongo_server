@@ -3,8 +3,9 @@ require('dotenv').config();
 const Express = require("express");
 const Cors = require("cors");
 const BodyParser = require("body-parser");
-const mongo_key = process.env.MONGO_TOKEN;
 const { request } = require("express");
+
+const mongo_key = process.env.MONGO_TOKEN;
 const client = new MongoClient(mongo_key);
 const server = Express();
 server.use(BodyParser.json());
@@ -12,7 +13,6 @@ server.use(BodyParser.urlencoded({ extended: true }));
 server.use(Cors());
 var collection;
 var collection2;
-
 
 
 server.get("/search", async (request, response) => {
@@ -55,4 +55,4 @@ server.listen("3000", async () => {
     } catch (e) {
         console.error(e);
     }
-});
+}); 
