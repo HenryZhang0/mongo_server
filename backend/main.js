@@ -20,6 +20,7 @@ var collection;
 var collection2;
 
 server.get("/search", async (request, response) => {
+    console.log("search request");
   try {
     //console.log(request.query.query);
     let result = await collection
@@ -31,7 +32,7 @@ server.get("/search", async (request, response) => {
               query: `${request.query.term}`,
               path: "title",
               fuzzy: {
-                maxEdits: 2,
+                maxEdits: 1,
                 prefixLength: 3,
               },
             },
