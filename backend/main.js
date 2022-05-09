@@ -39,6 +39,9 @@ server.get("/search", async (request, response) => {
             },
           },
         },
+        {
+            $limit: 6
+        }
       ])
       .toArray();
     response.send(result);
