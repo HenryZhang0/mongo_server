@@ -1,4 +1,7 @@
 {
+  "scripts": {
+  "start": "cd backend && node main.js"
+  },
   "dependencies": {
     "serve": "^13.0.2",
     "dotenv": "^8.0.0"
