@@ -59,7 +59,7 @@ export default function SignInSide() {
   function fetchActor(name) {
     //name = 'Alec Baldwin';
     let sname= name;
-    name = name.replace(" ", "_");
+    name = name.replace(/ /g, '_');
     fetch(`http://localhost:3000/actor/${name}`)
     .then(
       (res) => res.json()
@@ -121,7 +121,7 @@ export default function SignInSide() {
   };
 
   const queryMovie = () => {
-    let input = document.querySelector('#movie_input').value;
+    let input = document.querySelector('#movie_input').value.replace(/ /g, '_');
     console.log("test input", input);
     let data = fetch(`http://localhost:3000/search?term=${input}`).then(results => results.json());
     

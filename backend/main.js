@@ -21,6 +21,7 @@ var collection2;
 
 server.get("/search", async (request, response) => {
     console.log("search request");
+    title = request.query.term.replace(/_/g, ' ');
   try {
     //console.log(request.query.query);
     let result = await collection
@@ -29,7 +30,7 @@ server.get("/search", async (request, response) => {
           $search: {
             index: "default1",
             autocomplete: {
-              query: `${request.query.term}`,
+              query: `${title}`,
               path: "title",
               fuzzy: {
                 maxEdits: 1,
@@ -56,7 +57,7 @@ server.get("/get/:id", async (request, response) => {
 });
 
 server.get("/actor/:name", async (request, response) => {
-    let name = request.params.name.replace('_', ' ');
+    let name = request.params.name.replace(/_/g, ' ');
     //console.log(name);
   try {
     let result = await collection2.findOne({
