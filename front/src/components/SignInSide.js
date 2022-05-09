@@ -27,6 +27,8 @@ import Divider from '@mui/material/Divider';
 import InboxIcon from '@mui/icons-material/Inbox';
 import DraftsIcon from '@mui/icons-material/Drafts';
 
+const backend_path = "https://flick-picker.herokuapp.com" //"http://localhost:3000";
+
 const actors_list = ["Morgan Freeman", "Brad Pitt", "Leonardo DiCaprio", "Robert De Niro", "Matt Damon", "Michael Caine", "Christian Bale", "Tom Hanks", "Gary Oldman", "Al Pacino", "Bruce Willis", "Edward Norton", "Harrison Ford", "Johnny Depp", "Cillian Murphy", "Ralph Fiennes", "Kevin Spacey", "Samuel L. Jackson", "Tom Hardy", "Jack Nicholson", "Tom Cruise", "Philip Seymour Hoffman", "Robert Duvall", "Ryan Gosling", "Russell Crowe", "Liam Neeson", "Steve Buscemi", "Jake Gyllenhaal", "Joseph Gordon-Levitt", "Mark Ruffalo", "Harvey Keitel", "George Clooney", "Denzel Washington", "Bradley Cooper", "Hugo Weaving", "Woody Harrelson", "Jude Law", "Clint Eastwood", "Joaquin Phoenix", "Casey Affleck", "Tim Robbins", "Ed Harris", "John Carroll Lynch", "Tom Wilkinson", "Ben Kingsley", "Keanu Reeves", "Willem Dafoe", "John Hurt", "John Cazale", "Ben Affleck", "Matthew McConaughey", "Jared Leto", "Laurence Fishburne", "Bill Murray", "Christoph Waltz", "Tim Roth", "Ian Holm", "Heath Ledger", "Orlando Bloom", "Barry Pepper", "Alec Baldwin", "Michael Madsen", "Michael Fassbender", "Ken Watanabe", "Pete Postlethwaite", "Martin Sheen", "Guy Pearce", "Jamie Foxx", "Anthony Hopkins", "Chiwetel Ejiofor", "Alan Rickman", "Geoffrey Rush", "Dustin Hoffman", "Joe Pesci", "Brendan Gleeson", "Mark Wahlberg", "Paul Giamatti", "Ethan Hawke", "John Goodman", "Max von Sydow", "Christopher Lloyd", "Mykelti Williamson", "Marlon Brando", "Adrien Brody", "Paul Dano", "Stellan Skarsgård", "Don Cheadle", "Owen Wilson", "Daniel Brühl", "Daniel Craig", "Benicio Del Toro", "Jeremy Renner", "Stanley Tucci", "Harry Dean Stanton", "Robert Downey Jr.", "Aaron Eckhart", "Richard Harris", "Zach Galifianakis", "Kyle Chandler", "Will Smith"]
 //const actors_list = ["Morgan Freeman"]
 
@@ -60,7 +62,7 @@ export default function SignInSide() {
     //name = 'Alec Baldwin';
     let sname= name;
     name = name.replace(/ /g, '_');
-    fetch(`http://localhost:3000/actor/${name}`)
+    fetch(`${backend_path}/actor/${name}`)
     .then(
       (res) => res.json()
     )
@@ -123,13 +125,13 @@ export default function SignInSide() {
   const queryMovie = () => {
     let input = document.querySelector('#movie_input').value.replace(/ /g, '_');
     console.log("test input", input);
-    let data = fetch(`http://localhost:3000/search?term=${input}`).then(results => results.json());
+    let data = fetch(`${backend_path}/search?term=${input}`).then(results => results.json());
     
     if(input.length < 3) {
       return;
     }
                          
-    fetch(`http://localhost:3000/search?term=${input}`)
+    fetch(`${backend_path}/search?term=${input}`)
     .then(
       (res) => res.json()
     )
@@ -228,24 +230,22 @@ export default function SignInSide() {
                 id="email"
                 label="Custom Actor"
                 name="cusact"
-                autoComplete=" "
+                autoComplete="off"
                 autoFocus
               />
               <TextField
                 margin="normal"
-                required
                 fullWidth
                 name="movie_input"
                 label="Movie"
+                autoComplete="off"
                 id="movie_input"
                 onChange = {handleMovie}
               />
 
         <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-          {movie_options}
-              
-              
-            </Box>
+          {movie_options}      
+        </Box>
             
 
               <Button
