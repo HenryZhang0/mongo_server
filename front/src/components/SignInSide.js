@@ -47,38 +47,38 @@ function Copyright(props) {
 
 
 const theme = createTheme();
-  
+
 export default function SignInSide() {
   const [MAIN_ACTOR, SET_MAIN_ACTOR] = useState("striing");
   const [MAIN_ID, SET_MAIN_ID] = useState(0);
   const [MAIN_PICTURE, SET_MAIN_PICTURE] = useState("streeng");
 
-  
+
   function Reset() {
-    
+
   }
 
   function fetchActor(name) {
     //name = 'Alec Baldwin';
-    let sname= name;
+    let sname = name;
     name = name.replace(/ /g, '_');
     fetch(`${backend_path}/actor/${name}`)
-    .then(
-      (res) => res.json()
-    )
-    .then((data) => {
-      if(data.status != 0) {
-        window.alert("yo type it right dawg");
-        return;
-      }
-      data = data.actors.filter(person =>  person.name == sname);
-      SET_MAIN_PICTURE(data[0].profile_path);
-      SET_MAIN_ID(data[0].id);
-      SET_MAIN_ACTOR(data[0].name);
+      .then(
+        (res) => res.json()
+      )
+      .then((data) => {
+        if (data.status != 0) {
+          window.alert("yo type it right dawg");
+          return;
+        }
+        data = data.actors.filter(person => person.name == sname);
+        SET_MAIN_PICTURE(data[0].profile_path);
+        SET_MAIN_ID(data[0].id);
+        SET_MAIN_ACTOR(data[0].name);
 
-    });
+      });
 
-   
+
 
   }
 
@@ -87,7 +87,7 @@ export default function SignInSide() {
     //let new_actor = "Morgan Freeman";
     SET_MAIN_ACTOR(new_actor)
     console.log("new actor:", new_actor);
-   
+
 
   }
 
@@ -100,7 +100,7 @@ export default function SignInSide() {
     Reset();
     return new_actor;
 
-  } 
+  }
 
   function SetActor() {
     let new_actor = document.querySelector('#email').value;
@@ -126,42 +126,42 @@ export default function SignInSide() {
     let input = document.querySelector('#movie_input').value.replace(/ /g, '_');
     console.log("test input", input);
     let data = fetch(`${backend_path}/search?term=${input}`).then(results => results.json());
-    
-    if(input.length < 3) {
+
+    if (input.length < 3) {
       return;
     }
-                         
-    fetch(`${backend_path}/search?term=${input}`)
-    .then(
-      (res) => res.json()
-    )
-    .then((data) => {
-      console.log(input,data);
-      set_movie_options(
-        <List component="nav" aria-label="main mailbox folders">
-        {data.map(result => {
-          return (
-              <ListItemButton
-                selected={selectedIndex === 0}
-                onClick={(event) => handleListItemClick(event, 0)}
-              >
-                <ListItemIcon>
-                  <InboxIcon />
-                </ListItemIcon>
-                <ListItemText primary={result.title} />
-              </ListItemButton>
-              
-          ) 
-        })}
-        </List>
-      )
 
-    });
+    fetch(`${backend_path}/search?term=${input}`)
+      .then(
+        (res) => res.json()
+      )
+      .then((data) => {
+        console.log(input, data);
+        set_movie_options(
+          <List component="nav" aria-label="main mailbox folders">
+            {data.map(result => {
+              return (
+                <ListItemButton
+                  selected={selectedIndex === 0}
+                  onClick={(event) => handleListItemClick(event, 0)}
+                >
+                  <ListItemIcon>
+                    <InboxIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={result.title} />
+                </ListItemButton>
+
+              )
+            })}
+          </List>
+        )
+
+      });
   }
 
   const handleMovie = (event) => {
-    let data = queryMovie();   
-    console.log("dat", data);    
+    let data = queryMovie();
+    console.log("dat", data);
   }
 
 
@@ -174,17 +174,17 @@ export default function SignInSide() {
 
   const [movie_options, set_movie_options] = useState(
     <List component="nav" aria-label="main mailbox folders">
-                <ListItemButton
-                  selected={selectedIndex === 0}
-                  onClick={(event) => handleListItemClick(event, 0)}
-                >
-                  <ListItemIcon>
-                    <InboxIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Inbox" />
-                </ListItemButton>
-                
-              </List>
+      <ListItemButton
+        selected={selectedIndex === 0}
+        onClick={(event) => handleListItemClick(event, 0)}
+      >
+        <ListItemIcon>
+          <InboxIcon />
+        </ListItemIcon>
+        <ListItemText primary="Inbox" />
+      </ListItemButton>
+
+    </List>
   )
 
   return (
@@ -219,7 +219,7 @@ export default function SignInSide() {
             <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
               <LockOutlinedIcon />
             </Avatar>
-            
+
             <Typography component="h1" variant="h5">
               {MAIN_ACTOR}
             </Typography>
@@ -240,17 +240,17 @@ export default function SignInSide() {
                 label="Movie"
                 autoComplete="off"
                 id="movie_input"
-                onChange = {handleMovie}
+                onChange={handleMovie}
               />
 
-        <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-          {movie_options}      
-        </Box>
-            
+              <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                {movie_options}
+              </Box>
+
 
               <Button
                 type="submit"
-                onClick = {SetActor}
+                onClick={SetActor}
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
@@ -260,7 +260,7 @@ export default function SignInSide() {
 
               <Button
                 type="submit"
-                onClick = {RandomActor}
+                onClick={RandomActor}
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
