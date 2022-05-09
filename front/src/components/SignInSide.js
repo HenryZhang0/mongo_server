@@ -27,7 +27,8 @@ import Divider from '@mui/material/Divider';
 import InboxIcon from '@mui/icons-material/Inbox';
 import DraftsIcon from '@mui/icons-material/Drafts';
 
-const backend_path = "https://flick-picker.herokuapp.com" //"http://localhost:3000";
+//const backend_path = "https://flick-picker.herokuapp.com"
+const backend_path = "http://localhost:4000";
 
 const actors_list = ["Morgan Freeman", "Brad Pitt", "Leonardo DiCaprio", "Robert De Niro", "Matt Damon", "Michael Caine", "Christian Bale", "Tom Hanks", "Gary Oldman", "Al Pacino", "Bruce Willis", "Edward Norton", "Harrison Ford", "Johnny Depp", "Cillian Murphy", "Ralph Fiennes", "Kevin Spacey", "Samuel L. Jackson", "Tom Hardy", "Jack Nicholson", "Tom Cruise", "Philip Seymour Hoffman", "Robert Duvall", "Ryan Gosling", "Russell Crowe", "Liam Neeson", "Steve Buscemi", "Jake Gyllenhaal", "Joseph Gordon-Levitt", "Mark Ruffalo", "Harvey Keitel", "George Clooney", "Denzel Washington", "Bradley Cooper", "Hugo Weaving", "Woody Harrelson", "Jude Law", "Clint Eastwood", "Joaquin Phoenix", "Casey Affleck", "Tim Robbins", "Ed Harris", "John Carroll Lynch", "Tom Wilkinson", "Ben Kingsley", "Keanu Reeves", "Willem Dafoe", "John Hurt", "John Cazale", "Ben Affleck", "Matthew McConaughey", "Jared Leto", "Laurence Fishburne", "Bill Murray", "Christoph Waltz", "Tim Roth", "Ian Holm", "Heath Ledger", "Orlando Bloom", "Barry Pepper", "Alec Baldwin", "Michael Madsen", "Michael Fassbender", "Ken Watanabe", "Pete Postlethwaite", "Martin Sheen", "Guy Pearce", "Jamie Foxx", "Anthony Hopkins", "Chiwetel Ejiofor", "Alan Rickman", "Geoffrey Rush", "Dustin Hoffman", "Joe Pesci", "Brendan Gleeson", "Mark Wahlberg", "Paul Giamatti", "Ethan Hawke", "John Goodman", "Max von Sydow", "Christopher Lloyd", "Mykelti Williamson", "Marlon Brando", "Adrien Brody", "Paul Dano", "Stellan Skarsgård", "Don Cheadle", "Owen Wilson", "Daniel Brühl", "Daniel Craig", "Benicio Del Toro", "Jeremy Renner", "Stanley Tucci", "Harry Dean Stanton", "Robert Downey Jr.", "Aaron Eckhart", "Richard Harris", "Zach Galifianakis", "Kyle Chandler", "Will Smith"]
 //const actors_list = ["Morgan Freeman"]
@@ -55,8 +56,20 @@ export default function SignInSide() {
 
 
   function Reset() {
-
+    getMovieAnswers();
   }
+
+
+
+  function capitalizeLetter (words) {
+    // console.log("232");
+    var separateWord = words.toLowerCase().split(' ');
+    for (var i = 0; i < separateWord.length; i++) {
+       separateWord[i] = separateWord[i].charAt(0).toUpperCase() +
+       separateWord[i].substring(1);
+    }
+    return separateWord.join(' ');
+ }
 
   function fetchActor(name) {
     //name = 'Alec Baldwin';
@@ -68,7 +81,7 @@ export default function SignInSide() {
       )
       .then((data) => {
         if (data.status != 0) {
-          window.alert("yo type it right dawg");
+          window.alert("Actor not found, please respell");
           return;
         }
         data = data.actors.filter(person => person.name == sname);
@@ -87,8 +100,6 @@ export default function SignInSide() {
     //let new_actor = "Morgan Freeman";
     SET_MAIN_ACTOR(new_actor)
     console.log("new actor:", new_actor);
-
-
   }
 
   function RandomActor() {
@@ -103,13 +114,29 @@ export default function SignInSide() {
   }
 
   function SetActor() {
-    let new_actor = document.querySelector('#email').value;
+    let new_actor = capitalizeLetter(document.querySelector('#email').value);
+    //console.log(capitalizeLetter(new_actor));
     SET_MAIN_ACTOR(new_actor);
-    console.log(fetchActor(new_actor))
+    fetchActor(new_actor)
     Reset();
-    console.log(new_actor);
     return new_actor;
 
+  }
+
+  const [movie_answers, set_movie_answers] = useState([]);
+  function getMovieAnswers() {
+    let name = MAIN_ACTOR;
+    fetch(`${backend_path}/actormovies/${name}`)
+      .then(
+        (res) => res.json()
+      )
+      .then((data) => {
+        console.log(data);
+      })
+      .then((data) => {
+        set_movie_answers(data)
+      }
+      );
   }
 
   const handleSubmit = (event) => {
@@ -124,7 +151,7 @@ export default function SignInSide() {
 
   const queryMovie = () => {
     let input = document.querySelector('#movie_input').value.replace(/ /g, '_');
-    console.log("test input", input);
+    // console.log("test input", input);
     let data = fetch(`${backend_path}/search?term=${input}`).then(results => results.json());
 
     if (input.length < 3) {
@@ -139,11 +166,12 @@ export default function SignInSide() {
         console.log(input, data);
         set_movie_options(
           <List component="nav" aria-label="main mailbox folders">
-            {data.map(result => {
+            {data.map((result, index) => {
+
               return (
                 <ListItemButton
-                  selected={selectedIndex === 0}
-                  onClick={(event) => handleListItemClick(event, 0)}
+                  selected={selectedMovie === result}
+                  onClick={(event) => handleListItemClick(event, result)}
                 >
                   <ListItemIcon>
                     <InboxIcon />
@@ -165,27 +193,66 @@ export default function SignInSide() {
   }
 
 
+  const current_score = React.useState(0);
+  const [selectedMovie, setSelectedMovie] = React.useState(1);
 
-  const [selectedIndex, setSelectedIndex] = React.useState(1);
-
-  const handleListItemClick = (event, index) => {
-    setSelectedIndex(index);
+  const handleListItemClick = (event, index) => { 
+    handleAddMovie(index);
+    movieInput.current.value = "";
+    //console.log(index);
   };
 
   const [movie_options, set_movie_options] = useState(
-    <List component="nav" aria-label="main mailbox folders">
-      <ListItemButton
-        selected={selectedIndex === 0}
-        onClick={(event) => handleListItemClick(event, 0)}
-      >
-        <ListItemIcon>
-          <InboxIcon />
-        </ListItemIcon>
-        <ListItemText primary="Inbox" />
-      </ListItemButton>
+    <List component="nav" aria-label="main mailbox folders"></List>
+  );
 
+  function clear_suggestions() {
+    set_movie_options(
+      <List component="nav" aria-label="main mailbox folders"></List>
+    )
+  }
+
+  const [chosen_movies, set_chosen_movies] = useState([]);
+  const [chosen_movies_div, set_chosen_movies_div] = useState(
+    <List component="nav" aria-label="main mailbox folders">
     </List>
   )
+
+  const movieInput = React.useRef(null);
+
+  const handleAddMovie = (new_movie) => {
+    set_chosen_movies(
+      chosen_movies => [...chosen_movies, new_movie]
+    );
+    let the_movies = [...chosen_movies, new_movie];
+      console.log(the_movies);
+    set_chosen_movies_div(
+      <List component="nav" aria-label="main mailbox folders">
+          {the_movies.map((result, index) => {
+            return (
+              <ListItemButton
+                selected={selectedMovie === result}
+                onClick={(event) => handleListItemClick(event, result)}
+              >
+                <ListItemIcon>
+                  <InboxIcon />
+                </ListItemIcon>
+                <ListItemText primary={result.title} />
+              </ListItemButton>
+
+            )
+          })}
+        </List>
+    );
+    clear_suggestions();
+  }
+  
+  function calculate_score() {
+    // chosen_movies.map(movie => {
+    //   console.log(movie);
+    // })
+    getMovieAnswers();
+  }
 
   return (
 
@@ -233,22 +300,8 @@ export default function SignInSide() {
                 autoComplete="off"
                 autoFocus
               />
-              <TextField
-                margin="normal"
-                fullWidth
-                name="movie_input"
-                label="Movie"
-                autoComplete="off"
-                id="movie_input"
-                onChange={handleMovie}
-              />
 
-              <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                {movie_options}
-              </Box>
-
-
-              <Button
+               <Button
                 type="submit"
                 onClick={SetActor}
                 fullWidth
@@ -268,13 +321,42 @@ export default function SignInSide() {
                 Random Actor
               </Button>
 
-              <Grid container>
-                <Grid item xs>
-                  <Link href="#" variant="body2">
-                    Forgot password?
-                  </Link>
-                </Grid>
-              </Grid>
+              <Button
+                type="submit"
+                onClick={calculate_score}
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Submit Movies
+              </Button>
+              
+              <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                <div><b>Corrrect Movies</b></div>
+                {chosen_movies_div}
+              </Box>
+
+
+              <TextField
+                margin="normal"
+                fullWidth
+                name="movie_input"
+                label="Movie"
+                autoComplete="off"
+                id="movie_input"
+                inputRef = {movieInput}
+                onChange={handleMovie}
+              />
+
+              <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                {movie_options}
+              </Box>
+
+
+     
+
+
+              
               <Copyright sx={{ mt: 5 }} />
             </Box>
           </Box>

@@ -4,7 +4,7 @@ const Express = require("express");
 const Cors = require("cors");
 const BodyParser = require("body-parser");
 const { request } = require("express");
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 
 
 
@@ -58,6 +58,27 @@ server.get("/get/:id", async (request, response) => {
     response.status(500).send({ message: e.message });
   }
 });
+
+
+
+server.get("/actormovies/:name", async (request, response) => {
+  let name = request.params.name.replace(/_/g, ' ');
+  //console.log(name);
+try {
+  let result = await collection2.find({
+    actors: { $elemMatch: { name: name} },
+  }).toArray();
+
+  result.status = 0;
+
+  response.send(result.map((m) => { return m.id}));
+} catch (e) {
+  //response.send({status:-1})
+
+  response.status(500).send({ message: e.message });
+}
+});
+
 
 server.get("/actor/:name", async (request, response) => {
     let name = request.params.name.replace(/_/g, ' ');
