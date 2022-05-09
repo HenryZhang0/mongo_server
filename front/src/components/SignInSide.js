@@ -27,8 +27,8 @@ import Divider from '@mui/material/Divider';
 import InboxIcon from '@mui/icons-material/Inbox';
 import DraftsIcon from '@mui/icons-material/Drafts';
 
-//const backend_path = "https://flick-picker.herokuapp.com"
-const backend_path = "http://localhost:4000";
+const backend_path = "https://flick-picker.herokuapp.com"
+//const backend_path = "http://localhost:4000";
 
 const actors_list = ["Morgan Freeman", "Brad Pitt", "Leonardo DiCaprio", "Robert De Niro", "Matt Damon", "Michael Caine", "Christian Bale", "Tom Hanks", "Gary Oldman", "Al Pacino", "Bruce Willis", "Edward Norton", "Harrison Ford", "Johnny Depp", "Cillian Murphy", "Ralph Fiennes", "Kevin Spacey", "Samuel L. Jackson", "Tom Hardy", "Jack Nicholson", "Tom Cruise", "Philip Seymour Hoffman", "Robert Duvall", "Ryan Gosling", "Russell Crowe", "Liam Neeson", "Steve Buscemi", "Jake Gyllenhaal", "Joseph Gordon-Levitt", "Mark Ruffalo", "Harvey Keitel", "George Clooney", "Denzel Washington", "Bradley Cooper", "Hugo Weaving", "Woody Harrelson", "Jude Law", "Clint Eastwood", "Joaquin Phoenix", "Casey Affleck", "Tim Robbins", "Ed Harris", "John Carroll Lynch", "Tom Wilkinson", "Ben Kingsley", "Keanu Reeves", "Willem Dafoe", "John Hurt", "John Cazale", "Ben Affleck", "Matthew McConaughey", "Jared Leto", "Laurence Fishburne", "Bill Murray", "Christoph Waltz", "Tim Roth", "Ian Holm", "Heath Ledger", "Orlando Bloom", "Barry Pepper", "Alec Baldwin", "Michael Madsen", "Michael Fassbender", "Ken Watanabe", "Pete Postlethwaite", "Martin Sheen", "Guy Pearce", "Jamie Foxx", "Anthony Hopkins", "Chiwetel Ejiofor", "Alan Rickman", "Geoffrey Rush", "Dustin Hoffman", "Joe Pesci", "Brendan Gleeson", "Mark Wahlberg", "Paul Giamatti", "Ethan Hawke", "John Goodman", "Max von Sydow", "Christopher Lloyd", "Mykelti Williamson", "Marlon Brando", "Adrien Brody", "Paul Dano", "Stellan Skarsgård", "Don Cheadle", "Owen Wilson", "Daniel Brühl", "Daniel Craig", "Benicio Del Toro", "Jeremy Renner", "Stanley Tucci", "Harry Dean Stanton", "Robert Downey Jr.", "Aaron Eckhart", "Richard Harris", "Zach Galifianakis", "Kyle Chandler", "Will Smith"]
 //const actors_list = ["Morgan Freeman"]
@@ -55,8 +55,8 @@ export default function SignInSide() {
   const [MAIN_PICTURE, SET_MAIN_PICTURE] = useState("streeng");
 
 
-  function Reset() {
-    getMovieAnswers();
+  function Reset(actor) {
+    getMovieAnswers(actor);
   }
 
 
@@ -88,7 +88,7 @@ export default function SignInSide() {
         SET_MAIN_PICTURE(data[0].profile_path);
         SET_MAIN_ID(data[0].id);
         SET_MAIN_ACTOR(data[0].name);
-
+        
       });
 
 
@@ -108,7 +108,7 @@ export default function SignInSide() {
     SET_MAIN_ACTOR(new_actor)
     console.log("new actor:", new_actor);
     fetchActor(new_actor)
-    Reset();
+    Reset(new_actor);
     return new_actor;
 
   }
@@ -118,23 +118,21 @@ export default function SignInSide() {
     //console.log(capitalizeLetter(new_actor));
     SET_MAIN_ACTOR(new_actor);
     fetchActor(new_actor)
-    Reset();
+    Reset(new_actor);
     return new_actor;
 
   }
 
   const [movie_answers, set_movie_answers] = useState([]);
-  function getMovieAnswers() {
-    let name = MAIN_ACTOR;
+  function getMovieAnswers(actor) {
+    let name = actor;
     fetch(`${backend_path}/actormovies/${name}`)
       .then(
         (res) => res.json()
       )
       .then((data) => {
-        console.log(data);
-      })
-      .then((data) => {
         set_movie_answers(data)
+        //console.log(data);
       }
       );
   }
@@ -153,7 +151,7 @@ export default function SignInSide() {
     let input = document.querySelector('#movie_input').value.replace(/ /g, '_');
     // console.log("test input", input);
     let data = fetch(`${backend_path}/search?term=${input}`).then(results => results.json());
-
+    console.log(movie_answers)
     if (input.length < 3) {
       return;
     }
@@ -251,7 +249,14 @@ export default function SignInSide() {
     // chosen_movies.map(movie => {
     //   console.log(movie);
     // })
-    getMovieAnswers();
+    console.log(movie_answers);
+    console.log(chosen_movies);
+    chosen_movies.forEach((m) => {
+      console.log(m.id);  
+      if(movie_answers.includes(parseInt(m.id))) {
+        console.log("pog1");
+      }
+    })
   }
 
   return (
